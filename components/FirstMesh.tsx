@@ -4,6 +4,13 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/Addons.js';
 import * as dat from "dat.gui";
 import ghibliPlaneBackground from "../public/ghibliplane.png";
+import ghibliRun from "/public/ghiblirun.jpeg";
+import ghibliDragon from "/public/ghiblidragon.jpeg";
+import ghibliHouse from "/public/ghiblihouse.jpeg";
+import ghibliGang from "/public/ghibliGang.jpeg";
+import ghibliGang1 from "/public/ghibliGang1.jpeg";
+import nebula from "/public/nebula.jpg";
+import stars from "/public/stars.jpg";
 
 const FirstMesh: React.FC = () => {
   const sceneRef = useRef<HTMLDivElement>(null);
@@ -19,12 +26,12 @@ const FirstMesh: React.FC = () => {
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-    renderer.setClearColor(0x42bbaf);
+    // renderer.setClearColor(0x42bbaf);
 
     //lighting
-    const ambientLight = new THREE.AmbientLight(0xff0000, 0.8);
-    const directionalLight = new THREE.DirectionalLight(0xFF0000, 1);
-    directionalLight.position.set(0,0,20);
+    const ambientLight = new THREE.AmbientLight(0xff0000, 0.4);
+    const directionalLight = new THREE.DirectionalLight(0xFFFFFF, 1);
+    directionalLight.position.set(0,0,25);
     directionalLight.castShadow = true;
     // scene.add(ambientLight);
     directionalLight.shadow.camera.left = -15;
@@ -35,6 +42,7 @@ const FirstMesh: React.FC = () => {
     const dLightShadowHelper = new THREE.CameraHelper(directionalLight.shadow.camera);
     scene.add(dLightShadowHelper);
     scene.add(directionalLight);
+    scene.add(ambientLight);
 
     //lighting helpers
     const dLightHelper = new THREE.DirectionalLightHelper(directionalLight,10);
@@ -45,8 +53,19 @@ const FirstMesh: React.FC = () => {
 
     //textures
     const textureLoader = new THREE.TextureLoader();
+    const cubicTextureLoader = new THREE.CubeTextureLoader();
     //nextJS import images as StaticImage instead of a url
-    scene.background = textureLoader.load(ghibliPlaneBackground.src);
+    
+    //texture restiction - images must be square
+    scene.background = cubicTextureLoader.load([
+        nebula.src,
+        nebula.src,
+        nebula.src,
+        nebula.src,
+        nebula.src,
+        nebula.src,
+    ]);
+    // scene.background = textureLoader.load(ghibliPlaneBackground.src);
     
 
     //ensures meshes are only added once -> React Strict mode development causes useEffect to run twice
@@ -59,9 +78,9 @@ const FirstMesh: React.FC = () => {
     const geometry = new THREE.BoxGeometry(10,10,10);
     const material = new THREE.MeshStandardMaterial({ color: 0xffffff, wireframe: false });
     const cube = new THREE.Mesh(geometry, material);
-    scene.add(cube);
+    // scene.add(cube);
     const orbit = new OrbitControls(camera, renderer.domElement);
-    cube.position.set(0,0,10);
+    // cube.position.set(0,0,15);
     cube.castShadow = true;
     orbit.update();
 
@@ -76,6 +95,15 @@ const FirstMesh: React.FC = () => {
     //for my understanding - will remove
     const gridHelper = new THREE.GridHelper(40,20);
     scene.add(gridHelper);
+
+    //core ghibli mesh
+    const ghibliSphereGeometry = new THREE.SphereGeometry(5,50,50);
+    const ghibliTextureLoader = new THREE.TextureLoader();
+    const ghibliSphereMaterial = new THREE.MeshStandardMaterial({ map: ghibliTextureLoader.load(ghibliPlaneBackground.src)});
+    const ghibliSphereMesh = new THREE.Mesh(ghibliSphereGeometry, ghibliSphereMaterial);
+    scene.add(ghibliSphereMesh);
+    ghibliSphereMesh.add(cube);
+    cube.position.set(0,0,15);
 
 
     camera.position.set(-10,30,30);
@@ -108,7 +136,11 @@ const FirstMesh: React.FC = () => {
 
     }
     
-
+    
+    //has to be outside animation loop so that they don't keep getting recalculated
+    const diffBoxSphereY = Math.abs(ghibliSphereMesh.position.y - cube.position.y);
+    const diffBoxSphereX = Math.abs(ghibliSphereMesh.position.x - cube.position.x);
+    const diffBoxSphereZ = Math.abs(ghibliSphereMesh.position.z - cube.position.z);
 
     // Animation loop
     const animate = (time: number) => {
@@ -120,7 +152,25 @@ const FirstMesh: React.FC = () => {
 
       //ball bounce
         step += guiOptions.bounceSpeed;
-        cube.position.y = 10*Math.abs(Math.sin(step));
+        // cube.position.y = 10*Math.abs(Math.sin(step));
+
+      //rotate ghibli sphere
+    //   ghibliSphereMesh.rotateY(0.03);
+
+      //CHALLENGE: a way to do it without rotating the ghibli sphere. Will try for some equations
+
+        const orbitRadius = Math.sqrt(diffBoxSphereX*diffBoxSphereX + diffBoxSphereY*diffBoxSphereY  + diffBoxSphereZ*diffBoxSphereZ);
+        console.log("diffBoxSphereY:", diffBoxSphereY);
+        console.log("diffBoxSphereX:", diffBoxSphereX);
+        console.log("diffBoxSphereZ:", diffBoxSphereZ);
+
+        console.log("orbitRadius: ", orbitRadius);
+        // console.log("cube coordinate:", cube.position.z);
+        // console.log("sphere coordinate:", ghibliSphereMesh.position.z);
+        cube.position.x = Math.cos(step) * orbitRadius;
+        cube.position.y = Math.sin(step) * orbitRadius;
+        cube.position.z = Math.sin(step)*orbitRadius;
+      
     
       //hence why inreact three fibre camera is abstracted away as well in a canvas
       renderer.render(scene, camera);
