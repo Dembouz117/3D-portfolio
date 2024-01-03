@@ -3,6 +3,7 @@ import React, { useRef, useEffect } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/Addons.js';
 import * as dat from "dat.gui";
+import ghibliPlaneBackground from "../public/ghibliplane.png";
 
 const FirstMesh: React.FC = () => {
   const sceneRef = useRef<HTMLDivElement>(null);
@@ -16,6 +17,37 @@ const FirstMesh: React.FC = () => {
     renderer.toneMapping = THREE.ReinhardToneMapping;
     renderer.outputColorSpace = THREE.LinearSRGBColorSpace;
     renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.setClearColor(0x42bbaf);
+
+    //lighting
+    const ambientLight = new THREE.AmbientLight(0xff0000, 0.8);
+    const directionalLight = new THREE.DirectionalLight(0xFF0000, 1);
+    directionalLight.position.set(0,0,20);
+    directionalLight.castShadow = true;
+    // scene.add(ambientLight);
+    directionalLight.shadow.camera.left = -15;
+    directionalLight.shadow.camera.right = 15;
+    directionalLight.shadow.camera.top = 15;
+    directionalLight.shadow.camera.bottom = -15;
+    //shadow camera halper
+    const dLightShadowHelper = new THREE.CameraHelper(directionalLight.shadow.camera);
+    scene.add(dLightShadowHelper);
+    scene.add(directionalLight);
+
+    //lighting helpers
+    const dLightHelper = new THREE.DirectionalLightHelper(directionalLight,10);
+    scene.add(dLightHelper);
+
+    //FOG
+    scene.fog = new THREE.Fog(0xffffff, 0, 100);
+
+    //textures
+    const textureLoader = new THREE.TextureLoader();
+    //nextJS import images as StaticImage instead of a url
+    scene.background = textureLoader.load(ghibliPlaneBackground.src);
+    
 
     //ensures meshes are only added once -> React Strict mode development causes useEffect to run twice
     //renderer itself will reside in the DOM
@@ -25,17 +57,20 @@ const FirstMesh: React.FC = () => {
 
     //test cube
     const geometry = new THREE.BoxGeometry(10,10,10);
-    const material = new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: false });
+    const material = new THREE.MeshStandardMaterial({ color: 0xffffff, wireframe: false });
     const cube = new THREE.Mesh(geometry, material);
     scene.add(cube);
     const orbit = new OrbitControls(camera, renderer.domElement);
-    cube.position.set(0,10,10);
+    cube.position.set(0,0,10);
+    cube.castShadow = true;
     orbit.update();
 
     //PLANE
     const planeGeometry = new THREE.PlaneGeometry(30,30,5);
-    const planeMaterial = new THREE.MeshBasicMaterial({color: 0x000000, side:THREE.DoubleSide});
+    const planeMaterial = new THREE.MeshStandardMaterial({color: 0xffffff, side:THREE.DoubleSide});
     const plane = new THREE.Mesh(planeGeometry, planeMaterial);
+    plane.receiveShadow = true; 
+    plane.position.set(0,0,0);
     scene.add(plane);
 
     //for my understanding - will remove
@@ -47,8 +82,13 @@ const FirstMesh: React.FC = () => {
 
     const guiOptions = {
         cubeColor:"#ffea00",
-        wireframe: false
+        wireframe: false,
+        bounceSpeed: 0.01
     }
+
+    let step = 0;
+
+
     if (effectRan.current){
         const gui = new dat.GUI();
 
@@ -58,11 +98,17 @@ const FirstMesh: React.FC = () => {
         gui.add(guiOptions, "wireframe").onChange((e: boolean) => {
             cube.material.wireframe = e;
         })
+        //one other way of doing it for uniformity -> but speed ends up becoming outside the scope
+        // gui.add(guiOptions, "bounceSpeed").onChange((e: number) => {
+        //     speed = e;
+        // })
+
+        //note that this mutates guiOptions object, hence you can call its value directly
+        gui.add(guiOptions, "bounceSpeed", 0, 0.05);
 
     }
     
-    let step = 0;
-    let speed = 0.01;
+
 
     // Animation loop
     const animate = (time: number) => {
@@ -73,7 +119,7 @@ const FirstMesh: React.FC = () => {
       cube.rotation.y += 0.01;
 
       //ball bounce
-        step += speed;
+        step += guiOptions.bounceSpeed;
         cube.position.y = 10*Math.abs(Math.sin(step));
     
       //hence why inreact three fibre camera is abstracted away as well in a canvas
