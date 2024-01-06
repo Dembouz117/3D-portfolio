@@ -1,6 +1,7 @@
 // IntoHero.js
 import React from 'react';
 import styles from "@/app/styles/IntroHero.module.css";
+import { MdMouse } from "react-icons/md";
 
 const AboutMe = () => {
   return (
@@ -22,8 +23,9 @@ const AboutMe = () => {
     I am always keen to take up new technologies on the go, and learning from others! Currently, I&#39;m learning ThreeJs to create 3D websites to leverage the browsers&#39; increasing graphical processing capabilities to deliver better web experiences. This portfolio website is the first step!
             </div>
         </div>
-        <div className="text-black text-bungee font-light mt-6">
-            Scroll
+        <div className="text-white font-bungee font-light mt-6 flex items-center space-x-2 w-auto h-auto">
+            <div>Scroll</div>
+            <MdMouse className="animate-shake"/>
         </div>
       </div>
 

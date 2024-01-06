@@ -30,10 +30,25 @@ const config: Config = {
           "100%": {
             borderColor: "white"
           }  
+        },
+        shake: {
+          "10%, 90%": {
+            transform: "translate3d(0,-2px,0)"
+          },
+          "20%, 80%": {
+            transform: "translate3d(0,0,0)"
+          },
+          "30%, 50%, 70%": {
+            transform: "translate3d(0,0,0)"
+          },
+          "40%, 60%": {
+            transform: "translate3d(0,2px,0)"
+          }
         }
       },
       animation: {
-        typing: "typing 2s steps(20), blink .7s infinite"
+        typing: "typing 2s steps(20), blink .7s infinite",
+        shake: "shake 4s cubic-bezier(0.4, 0, 0.2, 1) both infinite"
       }
     },
     fontFamily: {

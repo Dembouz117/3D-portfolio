@@ -1,6 +1,6 @@
 "use client"
 import Image from 'next/image';
-import FirstMesh from './components/FirstMesh';
+import FirstMesh from '@/app/components/FirstMesh';
 import IntroHero from "@/app/components/IntroHero";
 import About from "@/app/components/About";
 export default function Home() {
