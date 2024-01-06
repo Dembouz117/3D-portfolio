@@ -1,0 +1,47 @@
+/* IntroHero.module.css */
+@keyframes typing {
+    from {
+      width: 0;
+    }
+    to {
+      width: 80%;
+    }
+  }
+  
+  @keyframes blink {
+    50% {
+      border-color: transparent;
+    }
+  }
+  
+  .typingEffect {
+    overflow: hidden;
+    white-space: nowrap;
+    animation: typing 3s steps(40, end);
+    position: relative;
+  }
+  
+  .typingEffect::after {
+    content: '';
+    display: inline-block;
+    width: 1px;
+    height: 1.2em;
+    margin-left: 5px; 
+    background-color: white; 
+    animation: blink 1s infinite;
+    position: absolute;
+    bottom: 5px; 
+    right: 0px;
+  }
+  
+  .cursor {
+    display: inline-block;
+    width: 1px;
+    height: 1.2em;
+    margin-left: 5px; /* Adjust this value to control the distance between text and cursor */
+    background-color: white; /* Change the cursor color */
+    animation: blink 1s infinite;
+    position: absolute;
+    bottom: 5px; /* Adjust this value to vertically align the cursor */
+  }
+  

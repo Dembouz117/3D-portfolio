@@ -105,7 +105,12 @@ const FirstMesh: React.FC = () => {
     ghibliSphereMesh.add(cube);
     cube.position.set(0,0,15);
 
+    //core ghibli lighting 
+    const ghibliPointLight = new THREE.PointLight(0x0000ff, 7, 0);
+    ghibliPointLight.position.set(ghibliSphereMesh.position.x, ghibliSphereMesh.position.y, ghibliSphereMesh.position.z);
+    scene.add(ghibliPointLight);
 
+    //camera
     camera.position.set(-10,30,30);
 
     const guiOptions = {
@@ -143,6 +148,7 @@ const FirstMesh: React.FC = () => {
     const diffBoxSphereZ = Math.abs(ghibliSphereMesh.position.z - cube.position.z);
 
     // Animation loop
+    // let bounceStep = 0;
     const animate = (time: number) => {
       requestAnimationFrame(animate);
 
@@ -151,25 +157,19 @@ const FirstMesh: React.FC = () => {
       cube.rotation.y += 0.01;
 
       //ball bounce
+        // bounceStep += guiOptions.bounceSpeed;
         step += guiOptions.bounceSpeed;
         // cube.position.y = 10*Math.abs(Math.sin(step));
 
-      //rotate ghibli sphere
-    //   ghibliSphereMesh.rotateY(0.03);
+        //rotate ghibli sphere by rotating parent
+        //   ghibliSphereMesh.rotateY(0.03);
 
-      //CHALLENGE: a way to do it without rotating the ghibli sphere. Will try for some equations
+      //CHALLENGE: a way to do it without rotating the ghibli sphere. Will try for some equations[completed]
 
         const orbitRadius = Math.sqrt(diffBoxSphereX*diffBoxSphereX + diffBoxSphereY*diffBoxSphereY  + diffBoxSphereZ*diffBoxSphereZ);
-        console.log("diffBoxSphereY:", diffBoxSphereY);
-        console.log("diffBoxSphereX:", diffBoxSphereX);
-        console.log("diffBoxSphereZ:", diffBoxSphereZ);
-
-        console.log("orbitRadius: ", orbitRadius);
-        // console.log("cube coordinate:", cube.position.z);
-        // console.log("sphere coordinate:", ghibliSphereMesh.position.z);
         cube.position.x = Math.cos(step) * orbitRadius;
-        cube.position.y = Math.sin(step) * orbitRadius;
-        cube.position.z = Math.sin(step)*orbitRadius;
+        cube.position.y = 15 * Math.sin(4 * step);
+        cube.position.z = Math.sin(step) * orbitRadius;
       
     
       //hence why inreact three fibre camera is abstracted away as well in a canvas
