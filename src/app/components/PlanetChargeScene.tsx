@@ -3,9 +3,6 @@ import React, { useRef, useEffect } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/Addons.js';
 import * as dat from "dat.gui";
-import ghibliPlaneBackground from "/public/ghibliplane.png";
-import nebula from "/public/nebula.jpg";
-
 import { GLTFLoader } from 'three/examples/jsm/Addons.js';
 
 interface PlanetChargeProps{
@@ -18,11 +15,17 @@ const PlanetChargeScene: React.FC<PlanetChargeProps> = ({ className }) => {
 
     useEffect(() => {
 
+        const clientWidth = containerRef.current!.clientWidth;
+        const clientHeight = containerRef.current!.clientHeight;
+
         const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(70, containerRef.current!.clientWidth/containerRef.current!.clientHeight, 0.1, 1000);
-        console.log("client height:",containerRef.current?.clientHeight);
-        console.log("client width:", containerRef.current?.clientWidth);
+        const camera = new THREE.PerspectiveCamera(90, clientWidth/clientHeight, 0.1, 2000);
         const renderer = new THREE.WebGLRenderer({antialias:true, alpha:true});
+
+        //camera position for ideal viewing of the space station's core
+        const cameraPositionViewCore = new THREE.Vector3(-70, 150, -40);
+        camera.position.set(...cameraPositionViewCore.toArray());
+
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.toneMapping = THREE.ReinhardToneMapping;
         renderer.outputColorSpace = THREE.LinearSRGBColorSpace;
@@ -32,9 +35,9 @@ const PlanetChargeScene: React.FC<PlanetChargeProps> = ({ className }) => {
         renderer.setClearColor(0xffffff, 0);
 
         //lighting
-        const ambientLight = new THREE.AmbientLight(0xff0000, 0.4);
-        const directionalLight = new THREE.DirectionalLight(0xFFFFFF, 1);
-        directionalLight.position.set(0,0,25);
+        const ambientLight = new THREE.AmbientLight(0xff0000, 10);
+        const directionalLight = new THREE.DirectionalLight(0xFFFFFF, 100);
+        directionalLight.position.set(0,0,15);
         directionalLight.castShadow = true;
         // scene.add(ambientLight);
         directionalLight.shadow.camera.left = -15;
@@ -51,90 +54,103 @@ const PlanetChargeScene: React.FC<PlanetChargeProps> = ({ className }) => {
         const dLightHelper = new THREE.DirectionalLightHelper(directionalLight,10);
         scene.add(dLightHelper);
 
+        //model
+        const assetLoader = new GLTFLoader();
+        const stationUrl = new URL("/public/models/power_station.glb", import.meta.url);
+        const spaceStationCore = new THREE.Vector3(0,25,-170);
+        assetLoader.load(stationUrl.href, (gltf) => {
+            const spaceStation = gltf.scene;
+            scene.add(spaceStation);
+            camera.lookAt(spaceStationCore);
+            orbit.target.set(...spaceStationCore.toArray());
+
+        });
+
         if (containerRef.current && effectRan.current) {
         containerRef.current.appendChild(renderer.domElement);
         }
 
-        //test cube
-        const geometry = new THREE.BoxGeometry(10,10,10);
-        const material = new THREE.MeshStandardMaterial({ color: 0xffffff, wireframe: false });
-        const cube = new THREE.Mesh(geometry, material);
-        const orbit = new OrbitControls(camera, renderer.domElement);
-        cube.castShadow = true;
-        orbit.update();
+        if(effectRan.current){
+            // Create a GUI object
+            const gui = new dat.GUI();
+
+            // Define the initial camera properties
+            const cameraProperties = {
+            positionX: 0,
+            positionY: 0,
+            positionZ: 5,
+            targetX: 0,
+            targetY: 0,
+            targetZ: 0,
+            };
+
+            const targetHelperProperties = {
+                positionX: 0,
+                positionY: 0,
+                positionZ: 0
+            }
+
+            // Add a point helper to visualize the camera target
+            const targetHelper = new THREE.Mesh(
+            new THREE.SphereGeometry(10),
+            new THREE.MeshBasicMaterial({ color: 0x00ff00 })
+            );
+            scene.add(targetHelper);
+
+
+            const updateCamera = () => {
+                camera.position.set(cameraProperties.positionX, cameraProperties.positionY, cameraProperties.positionZ);
+                camera.lookAt(new THREE.Vector3(cameraProperties.targetX, cameraProperties.targetY, cameraProperties.targetZ));
+                targetHelper.position.set(cameraProperties.targetX, cameraProperties.targetY, cameraProperties.targetZ);
+            }
+
+            // Add camera controls to the GUI
+            const cameraFolder = gui.addFolder('Camera');
+            const maxClientSize = Math.max(clientHeight, clientWidth);
+            cameraFolder.add(cameraProperties, 'positionX', -clientWidth, clientWidth).onChange(updateCamera);
+            cameraFolder.add(cameraProperties, 'positionY', -clientHeight, clientHeight).onChange(updateCamera);
+            cameraFolder.add(cameraProperties, 'positionZ', -maxClientSize, maxClientSize).onChange(updateCamera);
+            cameraFolder.add(cameraProperties, 'targetX', -clientWidth, clientWidth).onChange(updateCamera);
+            cameraFolder.add(cameraProperties, 'targetY', -clientHeight, clientHeight).onChange(updateCamera);
+            cameraFolder.add(cameraProperties, 'targetZ', -maxClientSize, maxClientSize).onChange(updateCamera);
+
+            const targetHelperFolder = gui.addFolder('targetHelper');
+            targetHelperFolder.add(targetHelperProperties, 'positionX').onChange((el) => targetHelper.position.x = el);
+        }
 
 
         //for my understanding - will remove
         const gridHelper = new THREE.GridHelper(40,20);
         scene.add(gridHelper);
 
-        //core ghibli mesh
-        const ghibliSphereGeometry = new THREE.SphereGeometry(5,50,50);
-        const ghibliTextureLoader = new THREE.TextureLoader();
-        const ghibliSphereMaterial = new THREE.MeshStandardMaterial({ map: ghibliTextureLoader.load(ghibliPlaneBackground.src)});
-        const ghibliSphereMesh = new THREE.Mesh(ghibliSphereGeometry, ghibliSphereMaterial);
-        scene.add(ghibliSphereMesh);
-        ghibliSphereMesh.add(cube);
-        cube.position.set(0,0,15);
 
-        //core ghibli lighting 
-        const ghibliPointLight = new THREE.PointLight(0x0000ff, 7, 0);
-        ghibliPointLight.position.set(ghibliSphereMesh.position.x, ghibliSphereMesh.position.y, ghibliSphereMesh.position.z);
-        scene.add(ghibliPointLight);
 
-        //camera
-        camera.position.set(-10,30,30);
-
-        const guiOptions = {
-            cubeColor:"#ffea00",
-            wireframe: false,
-            bounceSpeed: 0.01
-        }
+        //orbit controls
+        const orbit = new OrbitControls(camera, renderer.domElement);
+        orbit.update();
 
         let step = 0;
 
-        //model
-        const assetLoader = new GLTFLoader();
-        const monkeyUrl = new URL("./power_station.glb", import.meta.url);
-        assetLoader.load(monkeyUrl.href, (gltf) => {
-            scene.add(gltf.scene);
-        })
 
-        // if (effectRan.current){
-        //     const gui = new dat.GUI();
+        const point = new THREE.Vector3(0, 25, -170); // Replace with your specific coordinates
 
-        //     gui.addColor(guiOptions, "cubeColor").onChange((e: string)=>{
-        //         cube.material.color.set(e);
-        //     });
-        //     gui.add(guiOptions, "wireframe").onChange((e: boolean) => {
-        //         cube.material.wireframe = e;
-        //     })
+        // Add a point helper to visually represent the position
+        const pointHelper = new THREE.Mesh(
+        new THREE.SphereGeometry(5), // Sphere geometry to represent the point
+        new THREE.MeshBasicMaterial({ color: 0xff0000 }) // Red color for the sphere
+        );
+        pointHelper.position.copy(point);
+        scene.add(pointHelper);
 
-        //     //note that this mutates guiOptions object, hence you can call its value directly
-        //     gui.add(guiOptions, "bounceSpeed", 0, 0.05);
-
-        // }
+        // Add an AxesHelper to visually represent the orientation
+        const axesHelper = new THREE.AxesHelper(10); // Length of the axes
+        axesHelper.position.copy(point);
+        scene.add(axesHelper);
         
-        
-        //has to be outside animation loop so that they don't keep getting recalculated
-        const absoluteDiff = ghibliSphereMesh.position.distanceTo(cube.position);
 
         // Animation loop
         const animate = (time: number) => {
         requestAnimationFrame(animate);
-
-        // Rotate the cube
-        cube.rotation.x += 0.01;
-        cube.rotation.y += 0.01;
-
-        step += guiOptions.bounceSpeed;
-    
-
-        // const orbitRadius = Math.sqrt(diffBoxSphereX*diffBoxSphereX + diffBoxSphereY*diffBoxSphereY  + diffBoxSphereZ*diffBoxSphereZ);
-        const orbitRadius = absoluteDiff;
-        cube.position.x = Math.cos(step) * orbitRadius;
-        cube.position.y = 15 * Math.sin(4 * step);
-        cube.position.z = Math.sin(step) * orbitRadius;
         
         renderer.render(scene, camera);
         };

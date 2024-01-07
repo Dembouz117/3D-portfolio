@@ -7,7 +7,7 @@ import { MdMouse } from "react-icons/md";
 const AboutMe = () => {
   return (
     <ShineCard className={`bg-blue-300 relative text-white w-8/12 h-auto mt-12 rounded-lg overflow-hidden border-2 border-slate-200 space-y-6`}>
-      <div className={`skew-x-[-12deg] bg-white font-bungee font-extrabold text-7xl mt-12 w-6/12 h-[34rem] absolute top-[-4rem] right-[-42px] text-black`}></div>
+      <div className={`skew-x-[-12deg] bg-red-300 font-bungee font-extrabold text-7xl mt-12 w-6/12 h-[34rem] absolute top-[-4rem] right-[-42px] text-black`}></div>
       <div className="text-white font-bungee text-6xl font-bold">
         About Me
       </div>
@@ -33,7 +33,7 @@ const AboutMe = () => {
         {/* Invisible effect */}
       </div>
       <div className="absolute right-0 bottom-0">
-          <PlanetChargeScene className={"w-[24rem] h-[24rem]"}/>
+          <PlanetChargeScene className={"w-[32rem] h-[24rem]"}/>
       </div>
     </ShineCard>
   );

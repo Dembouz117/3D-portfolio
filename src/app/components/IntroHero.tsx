@@ -10,7 +10,7 @@ const IntoHero = () => {
         HELLO, I'M FADHEL
       </div>
       <div className = "inline-block w-max">
-        <div className="animate-typing overflow-hidden whitespace-nowrap border-r-2 border-r-white text-lg">Aspiring software engineer based in Singapore.</div>
+        <div className="animate-typing overflow-hidden whitespace-nowrap border-r-2 border-r-white text-lg">Aspiring full-stack software engineer based in Singapore.</div>
       </div>
     </ShineCard>
   );

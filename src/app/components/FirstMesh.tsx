@@ -5,7 +5,6 @@ import { OrbitControls } from 'three/examples/jsm/Addons.js';
 import * as dat from "dat.gui";
 import ghibliPlaneBackground from "/public/ghibliplane.png";
 import nebula from "/public/nebula.jpg";
-import stars from "/public/stars.jpg";
 
 import { GLTFLoader } from 'three/examples/jsm/Addons.js';
 
