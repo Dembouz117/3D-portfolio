@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import * as dat from "dat.gui";
 
 interface PlanetRingInterface{
     innerRadius: number,
@@ -14,6 +15,8 @@ const createPlanet = (scene: THREE.Scene, textureLoader: THREE.TextureLoader, si
         map: textureLoader.load(texture)
     });
     const mesh = new THREE.Mesh(geo, mat);
+    mesh.castShadow = true;
+    mesh.receiveShadow = true;
     const obj = new THREE.Object3D();
     obj.add(mesh);
     obj.position.set(...center.toArray());
@@ -36,6 +39,22 @@ const createPlanet = (scene: THREE.Scene, textureLoader: THREE.TextureLoader, si
     return {mesh, obj}
 }
 
+const setupLightControls = (pointLight:THREE.PointLight) => {
+    const gui = new dat.GUI();
+  
+    // Create a folder for the point light controls
+    const lightFolder = gui.addFolder('Point Light');
+  
+    // Add controls for intensity and position
+    lightFolder.add(pointLight, 'intensity').name('Intensity');
+    const positionFolder = lightFolder.addFolder('Position');
+    positionFolder.add(pointLight.position, 'x').name('X');
+    positionFolder.add(pointLight.position, 'y').name('Y');
+    positionFolder.add(pointLight.position, 'z').name('Z');
+  
+    // Open the folder by default
+    lightFolder.open();
+  }
 
 
 export { createPlanet };

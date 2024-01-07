@@ -4,6 +4,7 @@ import FirstMesh from '@/app/components/FirstMesh';
 import IntroHero from "@/app/components/IntroHero";
 import About from "@/app/components/About";
 import Navbar from './components/NavBar';
+import PointLightScene from './components/PointLight';
 export default function Home() {
   return (
     <main>
@@ -14,6 +15,7 @@ export default function Home() {
         {/* <PlanetChargeScene/>  */}
         {/* <FirstMesh/> */}
         {/* <PlanetChargeScene/> */}
+        <PointLightScene className="w-screen h-screen"/>
       </div>
     </main>
 
