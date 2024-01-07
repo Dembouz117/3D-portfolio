@@ -4,6 +4,9 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/Addons.js';
 import * as dat from "dat.gui";
 import { GLTFLoader } from 'three/examples/jsm/Addons.js';
+import nebula from "/public/nebula.jpg";
+import mercuryTexture from "/public/mercury_texture.png";
+import { createPlanet } from '../commons/planets';
 
 interface PlanetChargeProps{
     className?: string 
@@ -35,8 +38,8 @@ const PlanetChargeScene: React.FC<PlanetChargeProps> = ({ className }) => {
         renderer.setClearColor(0xffffff, 0);
 
         //lighting
-        const ambientLight = new THREE.AmbientLight(0xff0000, 10);
-        const directionalLight = new THREE.DirectionalLight(0xFFFFFF, 100);
+        const ambientLight = new THREE.AmbientLight(0xffffff, 10);
+        const directionalLight = new THREE.DirectionalLight(0xFFFFFF, 200);
         directionalLight.position.set(0,0,15);
         directionalLight.castShadow = true;
         // scene.add(ambientLight);
@@ -54,6 +57,17 @@ const PlanetChargeScene: React.FC<PlanetChargeProps> = ({ className }) => {
         const dLightHelper = new THREE.DirectionalLightHelper(directionalLight,10);
         scene.add(dLightHelper);
 
+        //background
+        const backgroundTextureLoader = new THREE.CubeTextureLoader();
+        scene.background = backgroundTextureLoader.load([
+            nebula.src,
+            nebula.src,
+            nebula.src,
+            nebula.src,
+            nebula.src,
+            nebula.src
+        ])
+
         //model
         const assetLoader = new GLTFLoader();
         const stationUrl = new URL("/public/models/power_station.glb", import.meta.url);
@@ -65,6 +79,11 @@ const PlanetChargeScene: React.FC<PlanetChargeProps> = ({ className }) => {
             orbit.target.set(...spaceStationCore.toArray());
 
         });
+
+        //additional planets
+        const planetTextureLoader = new THREE.TextureLoader();
+        const mercury = createPlanet(scene, planetTextureLoader, 3.2, mercuryTexture.src, 80, spaceStationCore);
+        
 
         if (containerRef.current && effectRan.current) {
         containerRef.current.appendChild(renderer.domElement);
