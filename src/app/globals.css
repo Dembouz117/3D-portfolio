@@ -4,7 +4,7 @@
 
 @font-face {
   font-family: "Bungee";
-  src: url("/public/fonts/Bungee-Regular.ttf");
+  src: url("../../public/fonts/Bungee-Regular.ttf");
 }
 
 /* :root {

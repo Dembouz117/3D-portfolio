@@ -3,16 +3,19 @@ import Image from 'next/image';
 import FirstMesh from '@/app/components/FirstMesh';
 import IntroHero from "@/app/components/IntroHero";
 import About from "@/app/components/About";
-import PlanetChargeScene from './components/PlanetChargeScene';
+import Navbar from './components/NavBar';
 export default function Home() {
   return (
-    <main className="flex flex-col items-center pt-16 relative">
-      {/* <FirstMesh/> */}
-       <IntroHero/>
-      <About/>
-      {/* <PlanetChargeScene/>  */}
-      {/* <FirstMesh/> */}
-      {/* <PlanetChargeScene/> */}
+    <main>
+      <Navbar name={"Fadhel"}/>
+      <div className="flex flex-col items-center pt-14 relative">
+        <IntroHero/>
+        <About/>
+        {/* <PlanetChargeScene/>  */}
+        {/* <FirstMesh/> */}
+        {/* <PlanetChargeScene/> */}
+      </div>
     </main>
+
   )
 }

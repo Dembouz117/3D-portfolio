@@ -9,10 +9,10 @@ import nebula from "/public/nebula.jpg";
 import { GLTFLoader } from 'three/examples/jsm/Addons.js';
 
 interface PlanetChargeProps{
-    className?: string | String
+    className?: string 
 }
 
-const PlanetChargeScene: React.FC = ({ className }: PlanetChargeProps) => {
+const PlanetChargeScene: React.FC<PlanetChargeProps> = ({ className }) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const effectRan = useRef(false);
 
@@ -100,20 +100,20 @@ const PlanetChargeScene: React.FC = ({ className }: PlanetChargeProps) => {
             scene.add(gltf.scene);
         })
 
-        if (effectRan.current){
-            const gui = new dat.GUI();
+        // if (effectRan.current){
+        //     const gui = new dat.GUI();
 
-            gui.addColor(guiOptions, "cubeColor").onChange((e: string)=>{
-                cube.material.color.set(e);
-            });
-            gui.add(guiOptions, "wireframe").onChange((e: boolean) => {
-                cube.material.wireframe = e;
-            })
+        //     gui.addColor(guiOptions, "cubeColor").onChange((e: string)=>{
+        //         cube.material.color.set(e);
+        //     });
+        //     gui.add(guiOptions, "wireframe").onChange((e: boolean) => {
+        //         cube.material.wireframe = e;
+        //     })
 
-            //note that this mutates guiOptions object, hence you can call its value directly
-            gui.add(guiOptions, "bounceSpeed", 0, 0.05);
+        //     //note that this mutates guiOptions object, hence you can call its value directly
+        //     gui.add(guiOptions, "bounceSpeed", 0, 0.05);
 
-        }
+        // }
         
         
         //has to be outside animation loop so that they don't keep getting recalculated
@@ -149,7 +149,7 @@ const PlanetChargeScene: React.FC = ({ className }: PlanetChargeProps) => {
     }, []); 
 
 
-    return <div ref={containerRef} className="w-[5rem] h-[6rem]"/>;
+    return <div ref={containerRef} className={`${className??""}`}/>;
 
     };
 
