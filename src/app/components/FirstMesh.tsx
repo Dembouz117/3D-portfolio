@@ -3,14 +3,11 @@ import React, { useRef, useEffect } from 'react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/Addons.js';
 import * as dat from "dat.gui";
-import ghibliPlaneBackground from "../public/ghibliplane.png";
-import ghibliRun from "/public/ghiblirun.jpeg";
-import ghibliDragon from "/public/ghiblidragon.jpeg";
-import ghibliHouse from "/public/ghiblihouse.jpeg";
-import ghibliGang from "/public/ghibliGang.jpeg";
-import ghibliGang1 from "/public/ghibliGang1.jpeg";
+import ghibliPlaneBackground from "/public/ghibliplane.png";
 import nebula from "/public/nebula.jpg";
 import stars from "/public/stars.jpg";
+
+import { GLTFLoader } from 'three/examples/jsm/Addons.js';
 
 const FirstMesh: React.FC = () => {
   const sceneRef = useRef<HTMLDivElement>(null);
@@ -121,6 +118,12 @@ const FirstMesh: React.FC = () => {
 
     let step = 0;
 
+    //model
+    const assetLoader = new GLTFLoader();
+    const monkeyUrl = new URL("./power_station.glb", import.meta.url);
+    assetLoader.load(monkeyUrl.href, (gltf) => {
+        scene.add(gltf.scene);
+    })
 
     if (effectRan.current){
         const gui = new dat.GUI();
@@ -178,20 +181,16 @@ const FirstMesh: React.FC = () => {
 
     animate(10);
 
-    // Cleanup function
     return () => {
       // Dispose of the renderer to prevent memory leaks
       renderer.dispose();
       effectRan.current = true;
     };
-  }, []); // Empty dependency array to run the effect only once on mount
+  }, []); 
 
 
   return <div ref={sceneRef} />;
-// useEffect(()=> {
-//     console.log("UseEffect start");
-// },[]);
-// return <div>FirstMesh</div>
+
 };
 
 export default FirstMesh;

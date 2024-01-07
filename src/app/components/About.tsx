@@ -1,6 +1,7 @@
 // IntoHero.js
 import React from 'react';
 import ShineCard from './ShineCard';
+import PlanetChargeScene from './PlanetChargeScene';
 import { MdMouse } from "react-icons/md";
 
 const AboutMe = () => {
@@ -29,7 +30,7 @@ const AboutMe = () => {
         </div>
         {/* Invisible effect */}
         <div className="">
-
+          <PlanetChargeScene/>
         </div>
       </div>
 

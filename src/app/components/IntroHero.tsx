@@ -1,6 +1,6 @@
 // IntoHero.js
 import React from 'react';
-import styles from "@/app/styles/IntroHero.module.css";
+import PlanetChargeScene from './PlanetChargeScene';
 import ShineCard from './ShineCard';
 
 const IntoHero = () => {
@@ -12,7 +12,6 @@ const IntoHero = () => {
       <div className = "inline-block w-max">
         <div className="animate-typing overflow-hidden whitespace-nowrap border-r-2 border-r-white text-lg">I'm an aspiring software engineer based in Singapore.</div>
       </div>
-
     </ShineCard>
   );
 };
