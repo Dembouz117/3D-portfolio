@@ -10,7 +10,8 @@ import lavaPlanetTexture from "/public/lava_texture.jpeg";
 import marsTexture from "/public/mercury_texture.png";
 import mossPlanetTexture from "/public/moss_planet_texture.jpeg";
 import { createPlanet } from '../commons/planets';
-import { createSceneConfig } from "../configs/planet-charge/config"
+import { createSceneConfig } from "../configs/planet-charge/config";
+import { addCameraGUIHelper } from "../commons/gui-helpers/helpers";
 
 interface PlanetChargeProps{
     className?: string 
@@ -26,18 +27,10 @@ const PlanetChargeScene: React.FC<PlanetChargeProps> = ({ className }) => {
 
         const clientWidth = containerRef.current!.clientWidth;
         const clientHeight = containerRef.current!.clientHeight;
-        const spaceStationCore = new THREE.Vector3(0,25,-170);
-        const cameraPositionViewCore = new THREE.Vector3(-70, 150, -40);
-
-        // const scene = new THREE.Scene();
-        // const camera = new THREE.PerspectiveCamera(90, clientWidth/clientHeight, 0.1, 2000);
-        // const renderer = new THREE.WebGLRenderer({antialias:true, alpha:true});
-        const { scene, camera, renderer } = createSceneConfig(clientWidth, clientHeight, spaceStationCore);
-
-        //camera position for ideal viewing of the space station's core
-        camera.position.set(...cameraPositionViewCore.toArray());
-
-
+        const spaceStationCore = new THREE.Vector3(50,25,-170);
+        const spaceStationCoreRadius = 20;
+        const cameraPositionViewCore = new THREE.Vector3(-63, 64, 0.9);
+        const { scene, camera, renderer } = createSceneConfig(clientWidth, clientHeight, spaceStationCore, cameraPositionViewCore);
 
         //lighting
         const ambientLight = new THREE.AmbientLight(0xffffff, 10);
@@ -93,11 +86,6 @@ const PlanetChargeScene: React.FC<PlanetChargeProps> = ({ className }) => {
             scene.add(spaceStation);
             camera.lookAt(spaceStationCore);
             orbit.target.set(...spaceStationCore.toArray());
-            if(spaceStation){
-                console.log("space station instantiated");
-                // pointLight.position.copy(spaceStationCore);
-            }
-            
         });
 
         //additional planets
@@ -116,67 +104,14 @@ const PlanetChargeScene: React.FC<PlanetChargeProps> = ({ className }) => {
             // Create a GUI object
             const gui = new dat.GUI();
 
-            // Define the initial camera properties
-            const cameraProperties = {
-            positionX: 0,
-            positionY: 0,
-            positionZ: 5,
-            targetX: 0,
-            targetY: 0,
-            targetZ: 0,
-            };
-
-            const targetHelperProperties = {
-                positionX: 0,
-                positionY: 0,
-                positionZ: 0
-            }
-
-            // Add a point helper to visualize the camera target
-            const targetHelper = new THREE.Mesh(
-            new THREE.SphereGeometry(10),
-            new THREE.MeshBasicMaterial({ color: 0x00ff00 })
-            );
-            // scene.add(targetHelper);
-            targetHelper.position.set(100,100,100);
-
-
-            const updateCamera = () => {
-                camera.position.set(cameraProperties.positionX, cameraProperties.positionY, cameraProperties.positionZ);
-                camera.lookAt(new THREE.Vector3(cameraProperties.targetX, cameraProperties.targetY, cameraProperties.targetZ));
-                targetHelper.position.set(cameraProperties.targetX, cameraProperties.targetY, cameraProperties.targetZ);
-            }
-
-            // Add camera controls to the GUI
-            const cameraFolder = gui.addFolder('Camera');
-            const maxClientSize = Math.max(clientHeight, clientWidth);
-            cameraFolder.add(cameraProperties, 'positionX', -clientWidth, clientWidth).onChange(updateCamera);
-            cameraFolder.add(cameraProperties, 'positionY', -clientHeight, clientHeight).onChange(updateCamera);
-            cameraFolder.add(cameraProperties, 'positionZ', -maxClientSize, maxClientSize).onChange(updateCamera);
-            cameraFolder.add(cameraProperties, 'targetX', -clientWidth, clientWidth).onChange(updateCamera);
-            cameraFolder.add(cameraProperties, 'targetY', -clientHeight, clientHeight).onChange(updateCamera);
-            cameraFolder.add(cameraProperties, 'targetZ', -maxClientSize, maxClientSize).onChange(updateCamera);
-
-            const targetHelperFolder = gui.addFolder('targetHelper');
-            targetHelperFolder.add(targetHelperProperties, 'positionX').onChange((el) => targetHelper.position.x = el);
-
+            //gui camera helpers
+            addCameraGUIHelper(camera, gui, clientWidth, clientHeight);
 
         }
 
-
-        //for my understanding - will remove
-        const gridHelper = new THREE.GridHelper(40,20);
-        scene.add(gridHelper);
-
-
-
         //orbit controls
         const orbit = new OrbitControls(camera, renderer.domElement);
-        orbit.update();
-
-        const point = new THREE.Vector3(0, 25, -170); 
-
-        
+        orbit.update();        
 
         // Animation loop
         const animate = () => {

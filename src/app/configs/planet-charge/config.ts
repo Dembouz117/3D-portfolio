@@ -1,15 +1,16 @@
 import * as THREE from "three";
 
 //uses my common scene, render and adjustable camera position
-const createSceneConfig = (aspectWidth: number, aspectHeight: number, cameraPoint: THREE.Vector3) => {
+const createSceneConfig = (aspectWidth: number, aspectHeight: number, cameraPoint: THREE.Vector3, cameraOrigin: THREE.Vector3) => {
     
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(90, aspectWidth/aspectHeight, 0.1, 2000);
     const renderer = new THREE.WebGLRenderer({antialias:true, alpha:true});
 
-    //camera position for ideal viewing of the space station's core
+    //camera position and pointing for ideal viewing of the space station's core
     camera.position.set(...cameraPoint.toArray());
+    camera.position.set(...cameraOrigin.toArray());
 
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.toneMapping = THREE.ReinhardToneMapping;

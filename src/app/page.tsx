@@ -12,10 +12,6 @@ export default function Home() {
       <div className="flex flex-col items-center pt-14 relative">
         <IntroHero/>
         <About/>
-        {/* <PlanetChargeScene/>  */}
-        {/* <FirstMesh/> */}
-        {/* <PlanetChargeScene/> */}
-        <PointLightScene className="w-screen h-screen"/>
       </div>
     </main>
 
