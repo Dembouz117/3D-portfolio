@@ -31,4 +31,18 @@ const createSceneConfig = (aspectWidth: number, aspectHeight: number, cameraPoin
     return { scene, camera, renderer}
 }
 
-export { createSceneConfig }
+const lightConfig = () => {
+    const ambientLight = new THREE.AmbientLight(0xffffff, 10);
+    const directionalLight = new THREE.DirectionalLight(0xFFFFFF, 30);
+    directionalLight.position.set(0,0,15);
+    directionalLight.castShadow = true;
+
+    directionalLight.shadow.camera.left = -15;
+    directionalLight.shadow.camera.right = 15;
+    directionalLight.shadow.camera.top = 15;
+    directionalLight.shadow.camera.bottom = -15;
+
+    return {directionalLight, ambientLight};
+}
+
+export { createSceneConfig, lightConfig };

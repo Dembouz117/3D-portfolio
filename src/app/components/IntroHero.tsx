@@ -5,7 +5,7 @@ import ShineCard from './ShineCard';
 
 const IntoHero = () => {
   return (
-    <ShineCard className="bg-gradient-to-b from-red-100 to-red-300 p-8 relative text-white flex flex-col items-center w-10/12 h-72 rounded-lg">
+    <ShineCard className="bg-gradient-to-b from-red-100 to-red-300 p-2 relative text-white flex flex-col items-center w-full h-72 rounded-3xl">
       <div className={`font-bungee font-extrabold text-7xl mt-12`}>
         HELLO, I'M FADHEL
       </div>

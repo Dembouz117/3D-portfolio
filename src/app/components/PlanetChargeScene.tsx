@@ -10,13 +10,12 @@ import lavaPlanetTexture from "/public/lava_texture.jpeg";
 import marsTexture from "/public/mercury_texture.png";
 import mossPlanetTexture from "/public/moss_planet_texture.jpeg";
 import { createPlanet } from '../commons/planets';
-import { createSceneConfig } from "../configs/planet-charge/config";
+import { createSceneConfig, lightConfig } from "../configs/planet-charge/config";
 import { addCameraGUIHelper } from "../commons/gui-helpers/helpers";
 
 interface PlanetChargeProps{
     className?: string 
 }
-
 
 
 const PlanetChargeScene: React.FC<PlanetChargeProps> = ({ className }) => {
@@ -28,22 +27,11 @@ const PlanetChargeScene: React.FC<PlanetChargeProps> = ({ className }) => {
         const clientWidth = containerRef.current!.clientWidth;
         const clientHeight = containerRef.current!.clientHeight;
         const spaceStationCore = new THREE.Vector3(50,25,-170);
-        const spaceStationCoreRadius = 20;
         const cameraPositionViewCore = new THREE.Vector3(-63, 64, 0.9);
         const { scene, camera, renderer } = createSceneConfig(clientWidth, clientHeight, spaceStationCore, cameraPositionViewCore);
 
         //lighting
-        const ambientLight = new THREE.AmbientLight(0xffffff, 10);
-        const directionalLight = new THREE.DirectionalLight(0xFFFFFF, 30);
-        directionalLight.position.set(0,0,15);
-        directionalLight.castShadow = true;
-
-        directionalLight.shadow.camera.left = -15;
-        directionalLight.shadow.camera.right = 15;
-        directionalLight.shadow.camera.top = 15;
-        directionalLight.shadow.camera.bottom = -15;
-
-        // const pointLight = new THREE.PointLight(0xffff00,300000);
+        const { ambientLight, directionalLight } = lightConfig();
 
         const pointLights = [
             new THREE.Vector3(0,25,-170),
@@ -57,7 +45,7 @@ const PlanetChargeScene: React.FC<PlanetChargeProps> = ({ className }) => {
             new THREE.Vector3(0,40,-200),
         ]
         pointLights.forEach(el => {
-            const pointLight = new THREE.PointLight(0xffff00,300000);
+            const pointLight = new THREE.PointLight(0xffab00,200000);
             pointLight.position.set(...el.toArray());
             pointLight.castShadow = true;
             scene.add(pointLight);
@@ -66,15 +54,16 @@ const PlanetChargeScene: React.FC<PlanetChargeProps> = ({ className }) => {
         scene.add(ambientLight);
 
         //background
-        const backgroundTextureLoader = new THREE.CubeTextureLoader();
-        scene.background = backgroundTextureLoader.load([
-            nebula.src,
-            nebula.src,
-            nebula.src,
-            nebula.src,
-            nebula.src,
-            nebula.src
-        ])
+        // const backgroundTextureLoader = new THREE.CubeTextureLoader();
+        // scene.background = backgroundTextureLoader.load([
+        //     nebula.src,
+        //     nebula.src,
+        //     nebula.src,
+        //     nebula.src,
+        //     nebula.src,
+        //     nebula.src
+        // ])
+        renderer.setClearColor(0xffffff,0);
 
         //model
         const assetLoader = new GLTFLoader();

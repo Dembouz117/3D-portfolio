@@ -9,7 +9,7 @@ export default function Home() {
   return (
     <main>
       <Navbar name={"Fadhel"}/>
-      <div className="flex flex-col items-center pt-14 relative">
+      <div className="flex flex-col items-center pt-14 px-8 relative bg-white">
         <IntroHero/>
         <About/>
       </div>
