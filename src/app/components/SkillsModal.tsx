@@ -7,6 +7,7 @@ import { useAtom } from "jotai";
 //states
 import { selectSkillAtom } from "@/app/store/index";
 
+
 interface skillsInterface{
   skillName: string;
   skills: string[];
@@ -39,7 +40,6 @@ const SkillsModal = () => {
   const skillSelectorHandler = (e:React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const dataSkill = e.currentTarget.dataset.skill;
-    console.log(dataSkill);
     setSelectedSkill(dataSkill!);
     const matchedSkillDescription = skills.find(skill => skill.skillName===dataSkill);
     setSelectedDescription(matchedSkillDescription!);
@@ -51,7 +51,7 @@ const SkillsModal = () => {
         {skills.map(skill => {
           const matchedSkillName = selectedSkill === skill.skillName;
           return(
-            <button className={` ${matchedSkillName?"bg-red-200": "bg-gray-700"} text-bungee rounded-full px-6 py-2 transform transition-transform duration-300 hover:scale-110`}data-skill={skill.skillName} onClick={skillSelectorHandler}>{skill.skillName}</button>
+            <button className={` ${matchedSkillName?"bg-red-200": "bg-gray-700"} text-bungee rounded-full px-6 py-2 transform transition-transform duration-300 hover:scale-110`}data-skill={skill.skillName} onClick={skillSelectorHandler} key={skill.skillName}>{skill.skillName}</button>
           )
         })}
     </RadialMenu>

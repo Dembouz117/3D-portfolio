@@ -19,7 +19,7 @@ const RadialMenu: React.FC<RadialMenuProps> = ({ children, className }) => {
             //percentages are with respect to the list parent, position is absolute
             const left = (50 - 50 * Math.cos(2 * (1 / l) * i * Math.PI)).toFixed(4) + '%';
             const top = (50 + 50 * Math.sin(2 * (1 / l) * i * Math.PI)).toFixed(4) + '%';
-            console.log("left, top: ",left, top);
+
 
             const style: React.CSSProperties = {
             left,
@@ -35,7 +35,6 @@ const RadialMenu: React.FC<RadialMenuProps> = ({ children, className }) => {
   const handleMenuButtonClick = () => {
       if (circleRef.current) {
             circleRef.current.classList.add(styles.open);
-            console.log(circleRef.current.classList);
       }
   };
 

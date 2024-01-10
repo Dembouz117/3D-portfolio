@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "dat.gui": "^0.7.9",
+    "framer-motion": "^10.17.12",
     "jotai": "^2.6.1",
     "next": "14.0.4",
     "react": "^18",

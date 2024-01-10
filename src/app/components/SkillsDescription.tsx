@@ -19,7 +19,7 @@ const SkillsDescription:React.FC<SkillsDescriptionProps> = ({ className = '', sk
         <div className="mb-8 text-[6rem]">Skills</div>
         <div className="mb-8 text-2xl">{skillName}</div>
         <div className={"flex flex-wrap w-full space-x-4 inline-block w-8/12"}>
-          {skillList.map(skill => <div className="px-2 py-1 border-2 border-white rounded-3xl flex flex-col mb-2">{skill}</div>)}
+          {skillList.map(skill => <div className="px-2 py-1 border-2 border-white rounded-3xl flex flex-col mb-2" key={skill}>{skill}</div>)}
         </div>
         
       </div>

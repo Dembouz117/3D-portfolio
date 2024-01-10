@@ -1,12 +1,26 @@
 // IntoHero.js
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+
+import styles from "@/app/styles/About.module.css";
+
 import ShineCard from './ShineCard';
 import PlanetChargeScene from './PlanetChargeScene';
 
 import { MdMouse } from "react-icons/md";
+import { motion, useScroll, useSpring } from "framer-motion";
 
 const AboutMe = () => {
   const [fadeIn, setFadeIn] = useState(false);
+  const aboutModalRef = useRef(null);
+  
+  const { scrollYProgress } = useScroll({
+    container: aboutModalRef,
+  });
+  const scaleX = useSpring(scrollYProgress,{
+    stiffness: 80,
+    damping: 30,
+    restDelta: 0.001
+  })
 
   useEffect(() => {
     setTimeout(()=>setFadeIn(true), 250);
@@ -19,9 +33,14 @@ const AboutMe = () => {
       <div className="text-white font-bungee text-6xl font-bold">
         About Me
       </div>
+
       <div className = "inline-block w-max relative">
-        <div className="overflow-auto border-r-2 border-r-white text-lg w-[40rem] h-[12rem] text-white font-light scrollbar-hide">
-            <div>
+      <motion.div
+          className={`bg-red-200 h-2 ${styles["progress-bar"]} w-[40rem]`}
+          style={{ scaleX: scaleX }}
+        />
+        <div className="overflow-auto border-r-2 border-r-white text-lg w-[40rem] h-[12rem] text-white font-light scrollbar-hide" ref={aboutModalRef} >
+          <div className="relative">
             I am a versatile <span className="text-red-300">Computer Science undergraduate</span> at Singapore Management University, driven by a commitment to excellence and a passion for collaboration. Currently pursuing a Bachelors&#39; as an Asean Undergraduate Scholarship Recipient, I am on track for <span className="text-red-300">Magna Cum Laude</span> and remain dedicated to balancing both my personal learning and school.
 
             <br/><br/>As a former <span className="text-red-300">Frontend Developer</span> at L3velUp Labs - a friend&#39;s startup, I received the pleasure of working with an amazing team and learning much from more seasoned developers within a team. I led the development of a concert seat selector using NEXT.JS and TailwindCSS and integrated Stripe for custom checkout flows involving different services. I also led the migration of the app-wide state management to Jotai.
