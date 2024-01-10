@@ -1,13 +1,19 @@
 // IntoHero.js
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import ShineCard from './ShineCard';
 import PlanetChargeScene from './PlanetChargeScene';
-import Image from "next/image";
+
 import { MdMouse } from "react-icons/md";
 
 const AboutMe = () => {
+  const [fadeIn, setFadeIn] = useState(false);
+
+  useEffect(() => {
+    setTimeout(()=>setFadeIn(true), 250);
+  },[]);
+  
   return (
-    <ShineCard className={`bg-blue-300 relative text-white w-11/12 h-auto mt-12 rounded-3xl overflow-hidden space-y-6 p-4`}>
+    <ShineCard className={`bg-blue-300 relative text-white w-11/12 h-auto mt-12 rounded-3xl overflow-hidden space-y-6 p-4 transition-transform ${fadeIn?"scale-100":"scale-0"} ease-out duration-3000`}>
       <div className={`skew-x-[-12deg] bg-white font-bungee font-extrabold text-7xl mt-12 w-3/12 h-[34rem] absolute top-[-4rem] right-[-4rem] text-black`}>
       </div>
       <div className="text-white font-bungee text-6xl font-bold">

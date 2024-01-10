@@ -39,10 +39,12 @@ const RadialMenu: React.FC<RadialMenuProps> = ({ children, className }) => {
       }
   };
 
+
+
   return (
     <div className={`${className}`}>
-      <nav className={`${styles["circular-menu"]} relative top-24 right-12`}>
-        <div ref={circleRef} className={`${styles["circle"]}`}>
+      <nav className={`${styles["circular-menu"]} relative top-24 right-12 font-bungee`}>
+        <div ref={circleRef} className={`${styles["circle"]} flex`}>
             {React.Children.map(children, child => (
             <a className="entry">
                   { child }

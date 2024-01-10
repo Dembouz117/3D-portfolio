@@ -45,7 +45,7 @@ const PlanetChargeScene: React.FC<PlanetChargeProps> = ({ className }) => {
             new THREE.Vector3(0,40,-200),
         ]
         pointLights.forEach(el => {
-            const pointLight = new THREE.PointLight(0xffab00,200000);
+            const pointLight = new THREE.PointLight(0x1e3a8a,2000000);
             pointLight.position.set(...el.toArray());
             pointLight.castShadow = true;
             scene.add(pointLight);
@@ -53,16 +53,6 @@ const PlanetChargeScene: React.FC<PlanetChargeProps> = ({ className }) => {
         scene.add(directionalLight);
         scene.add(ambientLight);
 
-        //background
-        // const backgroundTextureLoader = new THREE.CubeTextureLoader();
-        // scene.background = backgroundTextureLoader.load([
-        //     nebula.src,
-        //     nebula.src,
-        //     nebula.src,
-        //     nebula.src,
-        //     nebula.src,
-        //     nebula.src
-        // ])
         renderer.setClearColor(0xffffff,0);
 
         //model
